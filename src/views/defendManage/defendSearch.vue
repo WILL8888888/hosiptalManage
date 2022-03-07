@@ -5,7 +5,7 @@
   <el-input
       v-model="searchInput.medicineId"
       size="large"
-      placeholder="药品编号"
+      placeholder="防护用品编号"
       :prefix-icon="Search"
       :clearable="true"
       class="searchArea-idsearch"
@@ -18,7 +18,7 @@
   <el-input
       v-model="searchInput.medicineName"
       size="large"
-      placeholder="药品名称"
+      placeholder="防护用品名称"
       :prefix-icon="Search"
       :clearable="true"
       class="searchArea-nameserach"
@@ -32,8 +32,8 @@
 <diliver-module :diliver-title="resultTitle"></diliver-module>
 
 <el-table :data="tableData" stripe class="tableStyle" style="width: 1610px" max-height="600">
-    <el-table-column prop="id" label="药物编号" align="center"/>
-    <el-table-column prop="name" label="药物名称" align="center"/>
+    <el-table-column prop="id" label="防护用品编号" align="center"/>
+    <el-table-column prop="name" label="防护用品名称" align="center"/>
     <el-table-column prop="number" label="库存数量" align="center"/>
   </el-table>
 </template>
@@ -42,8 +42,8 @@
 import diliverModule from '@/views/components/diliverModule.vue'
 import { Search } from '@element-plus/icons'
 
-const searchTitle = '药品库存查询'
-const resultTitle = '药品库存查询结果'
+const searchTitle = '防护用品库存查询'
+const resultTitle = '防护用品库存查询结果'
 const searchInput = {
   medicineId: '',
   medicineName: ''

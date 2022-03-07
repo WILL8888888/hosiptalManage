@@ -8,7 +8,7 @@ const routes = [
   },
   {
     path:"/login",
-    name:'Login',
+    name:'login',
     component: () => import("../views/Login.vue")
   },
   {
@@ -17,7 +17,7 @@ const routes = [
     redirect: '/home',
     children: [{
       path: "/home",
-      name:"Home",
+      name:"home",
       component: () => import("../views/Home.vue")
     }]
   },
@@ -94,19 +94,34 @@ const routes = [
         component: () => import('../views/medicineManage/inventorySearch.vue')
       }
     ]
-  },{
-    path: '/doctor-manage',
-    name: "医生管理",
+  },,{
+    path: '/defend-manage',
+    name: "防护用品管理",
     component: Arrange,
     children: [
       {
-        path: "doctorLogin",
-        name: "医生录入",
-        component: () => import('../views/doctorManage/doctorLogin.vue')
+        path: "defendProvide",
+        name: "防护用品发放",
+        component: () => import('../views/defendManage/defendProvide.vue')
       },{
+        path: "defendSearch",
+        name: "防护用品查询",
+        component: () => import('../views/defendManage/defendSearch.vue')
+      }
+    ]
+  },{
+    path: '/user-manage',
+    name: "用户管理",
+    component: Arrange,
+    children: [
+      {
         path: "doctorSearch",
         name: "医生查询",
-        component: () => import('../views/doctorManage/doctorSearch.vue')
+        component: () => import('../views/userManage/doctorSearch.vue')
+      },{
+        path: "nurseSearch",
+        name: "护士查询",
+        component: () => import('../views/userManage/nurseSearch.vue')
       }
     ]
   },{

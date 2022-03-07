@@ -62,13 +62,24 @@ const MENUMODULE:menuModuleObj[] = [
   icon:'Grape'
 },
 {
-  routeHead:'医生管理',
+  routeHead:'防护用品管理',
   route:[{
-    routePath:'/doctor-manage/doctorLogin',
-    routeName:'医生录入'
+    routePath:'/defend-manage/defendProvide',
+    routeName:'防护用品发放'
   },{
-    routePath:'/doctor-manage/doctorSearch',
+    routePath:'/defend-manage/defendSearch',
+    routeName:'防护用品查询'
+  }],
+  icon:'Shop'
+},
+{
+  routeHead:'用户管理',
+  route:[{
+    routePath:'/user-manage/doctorSearch',
     routeName:'医生查询'
+  },{
+    routePath:'/user-manage/nurseSearch',
+    routeName:'护士查询'
   }],
   icon:'Avatar'
 },
