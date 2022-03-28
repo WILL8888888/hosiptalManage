@@ -2,9 +2,9 @@
 <diliver-module :diliver-title="searchTitle"></diliver-module>
 <div class="searchArea">
   <el-input
-      v-model="searchInput"
+      v-model="searchInput.idnum"
       size="large"
-      placeholder="请输入病人姓名"
+      placeholder="请输入已出院患者身份证号"
       :prefix-icon="Search"
       :clearable="true"
       class="searchArea-inputcss"
@@ -69,7 +69,7 @@
 <script setup lang="ts">
 import diliverModule from '@/views/components/diliverModule.vue'
 import { Search } from '@element-plus/icons'
-import { ref, computed} from 'vue'
+import { ref, computed, reactive} from 'vue'
 import type { ElTable } from 'element-plus'
 
 import { CONDITIONS,CONDITIONS_COLOR } from '../const'
@@ -100,7 +100,9 @@ interface Medicine {
 }
 
 
-const searchInput = ''
+const searchInput = reactive({
+  idnum: ''
+})
 const searchTitle = '出院病人历史信息查询'
 const tableTitle = '出院病人名单 & 查询结果'
 const medicineCount = '用药历史'

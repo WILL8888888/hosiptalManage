@@ -3,7 +3,7 @@
 
   <div class="searchArea">
     <el-input
-        v-model="searchInput.nurseId"
+        v-model="searchInput.workid"
         size="large"
         placeholder="护士编号"
         :prefix-icon="Search"
@@ -11,12 +11,12 @@
         class="searchArea-idsearch"
       >
       <template #append>
-        <el-button :icon="Search" type="primary"></el-button>
+        <el-button :icon="Search" type="primary" @click="getPersonalNurseInfo"></el-button>
       </template>
     </el-input>
 
     <el-input
-        v-model="searchInput.nurseName"
+        v-model="searchInput.name"
         size="large"
         placeholder="护士姓名"
         :prefix-icon="Search"
@@ -24,86 +24,138 @@
         class="searchArea-nameserach"
       >
       <template #append>
-        <el-button :icon="Search" type="primary"></el-button>
+        <el-button :icon="Search" type="primary" @click="getPersonalNurseInfo"></el-button>
       </template>
     </el-input>
   </div>
 
   <diliver-module :diliver-title="searchResult"></diliver-module>
 
-  <el-table ref="tableRef" row-key="date" :data="tableData" max-height="600" class="nurseTable" style="width: 1610px">
-    <el-table-column prop="id" label="护士编号" align="center"   />
+  <el-table ref="tableRef" row-key="date" :data="state.tableData" max-height="600" class="NurseTable" style="width: 1610px">
+    <el-table-column prop="workid" label="护士编号" align="center"   />
     <el-table-column prop="name" label="护士姓名" align="center"/>
-    <el-table-column prop="room" label="科室" align="center"/>
-    <el-table-column prop="professionalLevel" label="职级" align="center" />
-    <el-table-column prop="askStatus" label="申请防护状态" align="center" />
-    <el-table-column fixed="right" label="Operations" width="120">
+    <el-table-column prop="department" label="科室" align="center"/>
+    <el-table-column prop="level" label="职级" align="center" />
+    <el-table-column label="申请防护状态" align="center">
+      <template #default="scope">{{ DEFENDSTATUSMAP[scope.row.defendStatus] }}</template>
+    </el-table-column>
+    <el-table-column fixed="right" label="操作" width="120" align="center">
       <template #default="scope">
         <el-button
           type="text"
           size="small"
-          @click.prevent="askDefend(scope.$index)"
+          @click.prevent="askDefend(scope)"
         >
           申请防护用品
         </el-button>
       </template>
     </el-table-column>
   </el-table>
+
+  <el-dialog v-model="dialogFormVisible" title="防护用品发放单" width="500px">
+    <el-form :model="form" label-position="left" ref="ruleFormRef">
+      <el-form-item label="护士工号" prop="workid" required>{{form.workid}}</el-form-item>
+      <el-form-item label="护士姓名" prop="name" required>{{form.name}}</el-form-item>
+      <el-form-item label="发放防护用品清单" prop="defendList" required>
+      <el-checkbox-group v-model="form.defendList">
+        <el-checkbox label="医用射线铅手套" name="defendList"></el-checkbox>
+        <el-checkbox label="3502工厂灭菌医用防护服" name="defendList"></el-checkbox>
+        <el-checkbox label="3M医用防护口罩" name="defendList"></el-checkbox>
+        <el-checkbox label="医用防护面罩" name="defendList"></el-checkbox>
+      </el-checkbox-group>
+    </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="submitForm(ruleFormRef)"
+          >确认发放</el-button
+        >
+      </span>
+    </template>
+  </el-dialog>
 </template> 
 
 <script setup lang="ts">
 import diliverModule from '@/views/components/diliverModule.vue'
 import { Search } from '@element-plus/icons'
+import { ref, reactive,onMounted } from 'vue';
+import { nurseAllInfo, nursePersonalInfo, defendStatusAsking} from '@/utils/api/doctorNurse'
+import { DEFENDSTATUSMAP, SUCCESS } from '../const'
+import type { ElForm } from 'element-plus'
+import { ElMessage } from 'element-plus'
+
+type FormInstance = InstanceType<typeof ElForm>
+const ruleFormRef = ref<FormInstance>()
+const dialogFormVisible = ref(false)
+
+const form = reactive({
+  workid: '',
+  name: '',
+  defendList: [],
+})
 
 interface nurseInfo{
-  id: string,
+  workid: string,
   name: string,
-  room: string,
-  professionalLevel: string,
-  askStatus: string
+  department: string,
+  level: string,
+  defendStatus: string
 }
 
 const searchTitle = '护士查询'
 const searchResult = '护士列表 & 查询结果'
-const searchInput = {
-  nurseId: '',
-  nurseName: ''
+const searchInput = reactive({
+  workid: '',
+  name: ''
+})
+
+let state = reactive({
+  tableData:  [] as nurseInfo[]
+})
+
+const askDefend= (scope) => {
+  dialogFormVisible.value = true
+  form.workid = scope.row.workid,
+  form.name = scope.row.name
 }
 
+const refreshTable =async () => {
+  let {data} = await nurseAllInfo(null);
+  state.tableData = data.result
+}
 
-const tableData: nurseInfo[] =[
-  {
-    id: 'd0001',
-    name: '城建',
-    room: '消化内科',
-    professionalLevel: '护士长',
-    askStatus: '申请中...'
-  },
-  {
-    id: 'd0001',
-    name: '城建',
-    room: '消化内科',
-    professionalLevel: '护士长',
-    askStatus: '申请中...'
-  },
-  {
-    id: 'd0001',
-    name: '城建',
-    room: '消化内科',
-    professionalLevel: '护士长',
-    askStatus: '申请中...'
-  },
-  {
-    id: 'd0001',
-    name: '城建',
-    room: '消化内科',
-    professionalLevel: '护士长',
-    askStatus: '申请中...'
-  }
-]
+onMounted(()=> {
+  refreshTable()
+})
 
-const askDefend= (index: number) => {
-  console.log(index)
+const getPersonalNurseInfo =async ()=>{
+  let {data} = await nursePersonalInfo(searchInput)
+  state.tableData = data.result
+}
+
+const submitForm = (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  formEl.validate(async (valid) => {
+    let {data}= await defendStatusAsking(form)
+    if (valid) {
+      if(data.code === SUCCESS){
+        refreshTable()
+        ElMessage({
+          message: data.msg,
+          type: 'success',
+          duration: 500
+        })
+      }else {
+          ElMessage({
+          message: data.msg,
+          type: 'error',
+        })
+        return false
+      }
+      dialogFormVisible.value = false
+    } 
+  })
 }
 </script>
 
@@ -126,7 +178,7 @@ const askDefend= (index: number) => {
   color: #fff;
 }
 
-.nurseTable{
+.NurseTable{
   width: 100%;
   margin: 60px 0 0 50px;
 }

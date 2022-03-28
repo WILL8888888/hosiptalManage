@@ -94,7 +94,7 @@ const routes = [
         component: () => import('../views/medicineManage/inventorySearch.vue')
       }
     ]
-  },,{
+  },{
     path: '/defend-manage',
     name: "防护用品管理",
     component: Arrange,
@@ -135,5 +135,16 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  // 判断是否存在token
+    if (!sessionStorage.getItem('token')) {
+    // 判断去往的页面是不是登录页
+      if (to.path !== '/login') {
+        next('/login')
+      }
+    };
+    next();
+  })
 
 export default router;

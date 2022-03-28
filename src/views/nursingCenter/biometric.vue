@@ -23,11 +23,14 @@
     <el-form-item label="心率(次/分)" prop="heartrate" required>
       <el-input v-model="ruleForm.heartrate"></el-input>
     </el-form-item>
-    <el-form-item label="血压(mmHg)" prop="bloodpressure" required>
-      <el-input v-model="ruleForm.bloodpressure"></el-input>
-    </el-form-item>
     <el-form-item label="血糖(mmol/l)" prop="bloodsugar" required>
       <el-input v-model="ruleForm.bloodsugar"></el-input>
+    </el-form-item>
+    <el-form-item label="新冠核酸检测" prop="covid" required>
+      <el-select v-model="ruleForm.covid" placeholder="检测结果">
+        <el-option label="阴性" value="阴性"></el-option>
+        <el-option label="阳性" value="阳性"></el-option>
+      </el-select>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm(ruleFormRef)"
@@ -43,7 +46,10 @@
 import diliverModule from '@/views/components/diliverModule.vue'
 import { reactive, ref } from 'vue'
 import type { ElForm } from 'element-plus'
-
+import { biometricAdd } from '@/utils/api/biometric'
+import { SUCCESS } from '../const';
+import { ElMessage } from 'element-plus'
+import {formatTime} from '@/utils/index'
 type FormInstance = InstanceType<typeof ElForm>
 
 const formSize = ref('')
@@ -53,19 +59,35 @@ const ruleForm = reactive({
   idnum: '',
   temperature: '',
   heartrate: '',
-  bloodpressure: '',
-  bloodsugar: ''
+  bloodsugar: '',
+  covid: ''
 })
 
 const searchTitle = '体征测量数据录入'
 
 const submitForm = (formEl: FormInstance | undefined) => {
-  console.log(ruleForm)
   if (!formEl) return
-  formEl.validate((valid) => {
+  formEl.validate(async (valid) => {
     if (valid) {
-      console.log()
-      console.log('submit!')
+      let requestBody = {
+        ...ruleForm,
+        biometricStatus:'inHospital',
+        checktime : formatTime(new Date())
+      }
+      let {data} = await biometricAdd(requestBody)
+      if(data.code === SUCCESS){
+        ElMessage({
+          message: data.msg,
+          type: 'success',
+          duration: 500
+        })
+      }else{
+        ElMessage({
+          message: data.msg,
+          type: 'error',
+          duration: 500
+        })
+      }
     } else {
       console.log('error submit!')
       return false

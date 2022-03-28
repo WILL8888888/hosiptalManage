@@ -58,6 +58,14 @@
             placeholder="工号"
           ></el-input>
         </el-form-item>
+        <!-- 姓名 -->
+        <el-form-item prop="name" required>
+          <el-input
+            v-model="registerForm.name"
+            size="large"
+            placeholder="姓名"
+          ></el-input>
+        </el-form-item>
         <!-- 密码 -->
         <el-form-item prop="password" required>
           <el-input
@@ -67,11 +75,8 @@
             placeholder="密码"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="role" required>
-          <el-select v-model="registerForm.role" placeholder="角色">
-            <el-option label="医生" value="医生"></el-option>
-            <el-option label="护士" value="护士"></el-option>
-          </el-select>
+        <el-form-item prop="roleInfo" required>
+          <el-cascader :options="ROLELIST" clearable v-model="registerForm.roleInfo" placeholder="角色/职级/科室"/>
         </el-form-item>
         <!-- 按钮 -->
         <el-form-item>
@@ -92,6 +97,10 @@
 import { ref, reactive} from 'vue';
 import { useRouter} from 'vue-router'
 import type { ElForm } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import { registerUser, loginUser} from '../utils/api/loginRegister'
+import { SUCCESS, ROLELIST}  from './const'
+
 type FormInstance = InstanceType<typeof ElForm>
 const formSize = ref('')
 const loginRuleFormRef = ref<FormInstance>()
@@ -103,8 +112,9 @@ const loginForm= reactive({
 
 const registerForm= reactive({
   workid: '',
+  name: '',
   password: '',
-  role: ''
+  roleInfo: []
 })
 let title= ref('Login')
 let show= ref(true)
@@ -112,12 +122,31 @@ let show= ref(true)
 const router = useRouter()
 const loginIn= ((formEl: FormInstance | undefined)=>{
   if (!formEl) return
-  formEl.validate((valid) => {
+  formEl.validate(async (valid) => {
       //登录
       if (valid) {    
-      router.push({
-        name: 'home'
-      })
+      let { data } = await loginUser(loginForm)
+      if(data.code === SUCCESS){
+          sessionStorage.setItem('token',data.token)
+          localStorage.setItem('workid',data.workid)
+          localStorage.setItem('workName',data.workName)
+          ElMessage({
+            message: data.msg,
+            type: 'success',
+            duration: 500
+          })
+          setTimeout(() => {
+            router.push({
+            name: 'home'
+          })
+          }, 500);
+        }else{
+          ElMessage({
+            message: data.msg,
+            type: 'error',
+          })
+        }
+      
         console.log('login submit!')
       } else {
         console.log('login error submit!')
@@ -129,10 +158,30 @@ const loginIn= ((formEl: FormInstance | undefined)=>{
 
 const registerIn= ((formEl: FormInstance | undefined)=>{
   if (!formEl) return
-  formEl.validate((valid) => {
-      //登录
-      if (valid) {    
-        console.log('register submit!')
+  formEl.validate(async (valid) => {
+      //注册
+      if (valid) {   
+        let requestConfig = {
+          workid: registerForm.workid,
+          name: registerForm.name,
+          password: registerForm.password,
+          role: registerForm.roleInfo[0],
+          level: registerForm.roleInfo[1],
+          department: registerForm.roleInfo[2],
+          defendStatus: 'waitAsk'
+        } 
+        let { data } = await registerUser(requestConfig)
+        if(data.code === SUCCESS){
+          ElMessage({
+            message: data.msg,
+            type: 'success',
+          })
+        }else{
+          ElMessage({
+            message: data.msg,
+            type: 'error',
+          })
+        }
       } else {
         console.log('register error submit!')
         return false
@@ -159,8 +208,8 @@ let changeStatus = ()=> {
   height: 100vh;
 }
 .login_box {
-  width: 450px;
-  height: 410px;
+  width: 500px;
+  height: 450px;
   border-radius: 3px;
   position: absolute;
   left: 50%;

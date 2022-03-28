@@ -37,26 +37,12 @@
       ></el-cascader>
     </el-form-item>
 
-    <el-form-item label="病房类型" prop="wardtype" required>
-      <el-select v-model="ruleForm.wardtype" placeholder="病房类型">
-        <el-option v-for="(item,index) in WARDTYPELIST" :key="index" :label="item" :value="item"></el-option>
-      </el-select>
-    </el-form-item>
-
-    <el-form-item label="病房号" prop="wardnum" required>
-      <el-select v-model="ruleForm.wardnum" placeholder="病房号">
-        <el-option v-for="(item,index) in WARDNUMLIST" :key="index" :label="item" :value="item"></el-option>
-      </el-select>
-    </el-form-item>
-
-    <el-form-item label="床位号" prop="bednum" required>
-      <el-select v-model="ruleForm.bednum" placeholder="床位号">
-        <el-option v-for="(item,index) in BEDNUMLIST" :key="index" :label="item" :value="item"></el-option>
-      </el-select>
+    <el-form-item label="病房病床信息" prop="wardInfo" required>
+      <el-cascader :options="BedMap" clearable placeholder="病房病床信息" v-model="ruleForm.wardInfo"/>
     </el-form-item>
 
     <el-form-item label="入院病情" prop="condition" required>
-      <el-select v-model="ruleForm.condition" placeholder="床位号">
+      <el-select v-model="ruleForm.condition" placeholder="入院病情">
         <el-option v-for="(item,index) in CONDITIONS" :key="index" :label="item" :value="item"></el-option>
       </el-select>
     </el-form-item>
@@ -77,14 +63,16 @@
 
 <script setup lang="ts">
 import diliverModule from '@/views/components/diliverModule.vue'
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted} from 'vue'
 import type { ElForm } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import { patientInfo } from '@/utils/api/patientAbout'
+import { SUCCESS }  from '../const'
+import { wardInfoFilter} from '@/utils/api/ward';
+import {treeMake} from '@/utils/index'
 
 import {
   DOCTORLIST,
-  WARDTYPELIST,
-  WARDNUMLIST,
-  BEDNUMLIST,
   CONDITIONS
 } from '../const'
 
@@ -97,31 +85,75 @@ const ruleForm = reactive({
   idnum: '',
   gender: '',
   address: '',
-  departmentDoctor: '',
-  wardtype: WARDTYPELIST[2],
-  wardnum: '',
-  bednum:'',
+  departmentDoctor: [] as any,
+  wardInfo: [] as any,
   condition: '',
-  date: ''
+  date: '',
+  timeStamps: '' as any,
+  patientStatus: 'inHospital'
 })
 
 const searchTitle = '入院登记'
-
+let BedMap = ref([])
 const options = DOCTORLIST
 const props = {
   expandTrigger: 'hover',
 }
 
+const getWardInfo =async ()=>{
+  let {data} = await wardInfoFilter(null)
+  data.result.forEach(item => {
+    let wardObj = {
+      info: '',
+      children: []
+    }
+
+    wardObj.info = item?.wardType;
+
+    item?.wardRoom?.forEach(room=>{
+      let roomObj = {
+        info: room,
+        children: []
+      }
+      item?.wardBed[room]?.forEach(bed => {
+        if(!bed.patientId){
+          roomObj?.children?.push({'info':bed.bedNum})
+        }
+      })
+      wardObj?.children?.push(roomObj)
+    })
+    BedMap?.value?.push(wardObj)
+  })
+  BedMap.value = treeMake(BedMap.value)
+}
+
+onMounted(()=>{
+  getWardInfo();
+})
+
+
 const submitForm = (formEl: FormInstance | undefined) => {
-  console.log(ruleForm)
   if (!formEl) return
-  formEl.validate((valid) => {
+  formEl.validate(async (valid) => {
     if (valid) {
-      console.log()
-      console.log('submit!')
-    } else {
-      console.log('error submit!')
-      return false
+      ruleForm.departmentDoctor = ruleForm.departmentDoctor.join('/')
+      ruleForm.wardInfo = ruleForm.wardInfo.join('/')
+      ruleForm.timeStamps = new Date().getTime()
+      let {data} = await patientInfo(ruleForm);
+      if(data.code === SUCCESS){
+          ElMessage({
+            message: data.msg,
+            type: 'success',
+            duration: 500
+          })
+          formEl.resetFields()
+      } else {
+        ElMessage({
+            message: data.msg,
+            type: 'error',
+          })
+        return false
+      }
     }
   })
 }

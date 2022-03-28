@@ -1,13 +1,15 @@
-interface doctorType {
+import {treeMake} from '@/utils/index'
+
+interface Type {
   value: string,
   label: string
 }
-interface doctorListType {
+interface ListType {
   value: string,
   label: string,
-  children: doctorType[]
+  children: Type[]
 }
-const DOCTORLIST:doctorListType[] = [
+const DOCTORLIST:ListType[] = [
 {
   value: '消化内科',
   label: '消化内科',
@@ -104,10 +106,68 @@ const DOCTORLIST:doctorListType[] = [
       label:'武旭'
     },
   ]
+},
+{
+  value: 'COVID-19特殊处理科',
+  label: 'COVID-19特殊处理科',
+  children: [
+    {
+      value:'尼尔',
+      label:'尼尔'
+    },
+    {
+      value:'武旭',
+      label:'武旭'
+    },
+  ]
 },]
-const WARDTYPELIST:string[] = ['VIP单人病房','舒适双人病房','普通病房','新冠疫情特殊隔离病房'];
-const WARDNUMLIST:string[] = ['01','02','03','04','05','06','07','08','09','10','11','隔离01','隔离02'];
-const BEDNUMLIST:string[] = ['001','002','003','004']
+
+
+const documentList = [{info : '消化内科'},{info : '放射科'},{info : '神经内科'},{info : '重症医学科'},{info : '移植科'},{info : '泌尿外科'},{info : '呼吸科'},{info : 'COVID-19特殊处理科'}]
+const ROLEINFO = [
+{
+  info:'医生',
+  children:[
+  {
+    info: '医师',
+    children: documentList
+  },
+  {
+    info: '主治医师',
+    children: documentList
+  },
+  {
+    info: '副主任医师',
+    children: documentList
+  },
+  {
+    info: '主任医师',
+    children: documentList
+  },]
+},
+{
+  info:'护士',
+  children:[
+  {
+    info: '护士',
+    children: documentList
+  },
+  {
+    info: '主管护师',
+    children: documentList
+  },
+  {
+    info: '副主任护师',
+    children: documentList
+  },
+  {
+    info: '主任护师',
+    children: documentList
+  },]
+}]
+
+let ROLELIST = treeMake(ROLEINFO)
+
 const CONDITIONS: string[] = ['轻度','中度','严重','紧急']
 const CONDITIONS_COLOR = {
   '轻度': 'success',
@@ -119,61 +179,93 @@ const CONDITIONS_COLOR = {
 const DESCRIPTIONS = [
 {
   descriptTitle: '姓名',
-  icons: 'User'
+  icons: 'User',
+  key: 'name'
 },{
   descriptTitle: '身份证号',
-  icons: 'Postcard'
+  icons: 'Postcard',
+  key: 'idnum'
 },{
   descriptTitle: '性别',
-  icons: 'userFilled'
+  icons: 'userFilled',
+  key: 'gender'
 },{
   descriptTitle: '入院病情',
-  icons: 'Tickets'
+  icons: 'Tickets',
+  key: 'condition'
+},{
+  descriptTitle: '科室/医生',
+  icons: 'Stamp',
+  key: 'departmentDoctor'
+},{
+  descriptTitle: '病房信息',
+  icons: 'ScaleToOriginal',
+  key: 'wardInfo'
 },{
   descriptTitle: '家庭住址',
-  icons: 'officeBuilding'
+  icons: 'officeBuilding',
+  key: 'address'
 }]
 
 const MEDICINEINFO = [
 {
   infoTitle:'药品编号',
-  icons:'Document'
+  icons:'Document',
+  key: 'medicineid'
 },{
   infoTitle:'药品名称',
-  icons:'Cherry'
-},{
-  infoTitle:'药品库存数量',
-  icons:'HelpFilled'
+  icons:'Cherry',
+  key: 'medicineName'
 },{
   infoTitle:'药品价格',
-  icons:'Money'
+  icons:'Money',
+  key: 'price'
+},{
+  infoTitle:'药品库存数量',
+  icons:'HelpFilled',
+  key: 'inventory'
 }]
 
 const COUNTALL = [
 {
   descriptions: '入院时间',
-  icons: 'Calendar'
+  icons: 'Calendar',
+  key: 'inDate'
 },{
   descriptions: '出院时间',
-  icons: 'Calendar'
+  icons: 'Calendar',
+  key: 'outDate'
 },{
   descriptions: '病房类型',
-  icons: 'HomeFilled'
+  icons: 'HomeFilled',
+  key: 'wardType'
+},{
+  descriptions: '病房单价',
+  icons: 'Ticket',
+  key: 'wardPrice'
 },{
   descriptions: '药单总价',
-  icons: 'Money'
+  icons: 'Money',
+  key: 'medicineTotal'
 },{
   descriptions: '费用合计',
-  icons: 'Wallet'
+  icons: 'Wallet',
+  key: 'totalPrice'
 }]
+
+const DEFENDSTATUSMAP = {
+  'waitAsk' : '待申请',
+  'asking' : '申请中...'
+}
+const SUCCESS = 200
 export {
   DOCTORLIST,
-  WARDTYPELIST,
-  WARDNUMLIST,
-  BEDNUMLIST,
+  ROLELIST,
   CONDITIONS,
   CONDITIONS_COLOR,
   DESCRIPTIONS,
   MEDICINEINFO,
-  COUNTALL
+  COUNTALL,
+  SUCCESS,
+  DEFENDSTATUSMAP
 }

@@ -4,8 +4,12 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import * as Icons from '@element-plus/icons'
 import router from './router'
+import axios from 'axios'
+axios.defaults.baseURL = import.meta.env.VITE_APP_URL
 import App from './App.vue'
 const app = createApp(App);
+
+
 
 app.use(ElementPlus);
 app.use(router);
