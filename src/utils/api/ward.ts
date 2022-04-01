@@ -1,6 +1,6 @@
 import instance from '../request'
 
-function wardInfo(config){
+function wardFindInfo(config){
   return instance.request({
     method: 'get',
     url: '/ward/wardInfo',
@@ -16,25 +16,52 @@ function wardUpdatePrice(config){
   })
 }
 
-function wardInfoFilter(config){
+function wardFindType(config){
   return instance.request({
-    method: 'get',
-    url: '/ward/wardInfoFilter',
+    method: 'post',
+    url: '/ward/wardFindType',
     data: config
   })
 }
 
-function wardFind(config){
+function wardFindRoom(config){
   return instance.request({
     method: 'post',
-    url: '/ward/wardFind',
+    url: '/ward/wardFindRoom',
+    data: config
+  })
+}
+
+function wardFindBed(config){
+  return instance.request({
+    method: 'post',
+    url:'/ward/wardFindBed',
+    data: config
+  })
+}
+
+function wardInPatient(config){
+  return instance.request({
+    method:'post',
+    url:'/ward/wardInPatient',
+    data: config
+  })
+}
+
+function wardFindPatientInfo(config){
+  return instance.request({
+    method: 'post',
+    url: '/ward/wardFindPatientInfo',
     data: config
   })
 }
 
 export {
-  wardInfo,
+  wardFindInfo,
   wardUpdatePrice,
-  wardInfoFilter,
-  wardFind
+  wardFindRoom,
+  wardFindType,
+  wardFindBed,
+  wardInPatient,
+  wardFindPatientInfo
 }

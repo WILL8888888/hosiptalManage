@@ -76,7 +76,22 @@ watch(() => state.tableData, (newValue, oldValue) => {
 
 const findBiometric =async ()=>{
   let {data} = await biometricSearch(select.value === 'idnum'?{'idnum': searchInput.idnum}:{'name':searchInput.name});
-  state.tableData = data.result
+  let res = data.result[0]
+  let tableArr = []
+  res.checktime.forEach((item,index)=>{
+    let biometric = {
+      name: res.name,
+      idnum: res.idnum,
+      temperature: res.temperature[index],
+      heartrate: res.heartrate[index],
+      bloodsugar: res.bloodsugar[index],
+      covid: res.covid[index],
+      checktime: item
+    }
+    tableArr.push(biometric)
+  })
+  
+  state.tableData = tableArr
 }
 
 const myCharts = ref<any>();
@@ -86,7 +101,7 @@ const bloodSugarChart = ref<HTMLElement>();
 
 const drawTemperatureChart = ((newValue)=>{
 
-  let temperatureArray = newValue.map(item => {return item.temperature});
+  let temperatureArray = newValue.map(item => {return item.temperature})
   setTimeout(() => {
     // 绘制图表
     myCharts.value = echarts.init(temperatureChart.value!);

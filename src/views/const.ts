@@ -198,9 +198,17 @@ const DESCRIPTIONS = [
   icons: 'Stamp',
   key: 'departmentDoctor'
 },{
-  descriptTitle: '病房信息',
+  descriptTitle: '病房类型',
   icons: 'ScaleToOriginal',
-  key: 'wardInfo'
+  key: 'wardType'
+},{
+  descriptTitle: '病室',
+  icons: 'ScaleToOriginal',
+  key: 'wardRoom'
+},{
+  descriptTitle: '病床号',
+  icons: 'ScaleToOriginal',
+  key: 'wardBed'
 },{
   descriptTitle: '家庭住址',
   icons: 'officeBuilding',

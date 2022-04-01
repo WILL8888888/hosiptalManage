@@ -107,11 +107,12 @@ import { Search, CircleCheckFilled} from '@element-plus/icons'
 
 import { computed, reactive, ref} from 'vue'
 import { DESCRIPTIONS, COUNTALL } from '../const'
-import { wardFind } from '@/utils/api/ward'
+import { wardFindPatientInfo } from '@/utils/api/ward'
 import { formatTime } from '@/utils/index'
 import { patientPersonalInfo } from '@/utils/api/patientAbout'
 import { medicineListSearchOne } from '@/utils/api/medicineList'
 import { updateAllStatus } from '@/utils/api/updateOutStatus'
+import { ElNotification } from 'element-plus'
 
 const tableTitle = "费用结算区域"
 const medicineFeeTitle = '药品费用'
@@ -166,8 +167,8 @@ const findBiometric =async ()=>{
   state.tableData = medicineInfo.data.result
   medicineTotalPrice.value = state.tableData.map(item => {return item.price*item.medicineNum}).reduce((pre,cur)=>{return Number((pre+cur).toFixed(2))},)
 
-  let wardType = personInfo.data.result[0].wardInfo.split('/')[0]
-  let wardInfo = await wardFind({'wardType': wardType})
+  let wardType = state.patientDescriptions[0].wardType
+  let wardInfo = await wardFindPatientInfo({'patientId': searchInput.idnum})
   timeDate.value = ((new Date().getTime() - personInfo.data.result[0].timeStamps) / (24*60*60*1000)).toFixed(0)
   state.totalDescriptions = {
     inDate: personInfo.data.result[0].date,
@@ -179,13 +180,41 @@ const findBiometric =async ()=>{
   }
 }
 
-const confirmEvent =async ()=>{
-  let requestBody = {
-    'idnum' : state.patientDescriptions[0].idnum
+const cleanUp = ()=>{
+  state.patientDescriptions = [];
+  state.tableData = [];
+  state.totalDescriptions = {} as Total
+  state.wardInfo = {};
+  medicineTotalPrice.value = 0
   }
-  await updateAllStatus(requestBody)
 
+const confirmEvent =async ()=>{
+  if(state?.patientDescriptions[0]?.idnum ?? ''){
+    let requestBody = {
+    'idnum' : state?.patientDescriptions[0]?.idnum,
+    'outDate': state?.totalDescriptions?.outDate,
+    'totalPrice':  state?.totalDescriptions?.totalPrice,
+    'outMedicineTotalPrice': state?.totalDescriptions?.medicineTotal,
+    'outWardPrice': state?.totalDescriptions?.wardPrice
+    }
+    await updateAllStatus(requestBody)
+
+    cleanUp()
+    ElNotification({
+      title: '付款成功',
+      message: '付款完成，所有病人情况已经记录在出院数据，如需查看请到出院查询进行操作',
+      type: 'success',
+    })
+  }else{
+    ElNotification({
+      title: '没有输入身份证号',
+      message: '请输入身份证号后再进行相应付款',
+      type: 'warning',
+    })
+  }
   
+
+
 }
 
 </script>

@@ -32,9 +32,18 @@ function dispatchFinish (config){
   })
 }
 
+function cancelList (config){
+  return instance.request({
+    method: 'post',
+    url: '/medicineList/cancelList',
+    data: config
+  })
+}
+
 export {
   medicineInfo,
   medicineListSearchAll,
   medicineListSearchOne,
-  dispatchFinish
+  dispatchFinish,
+  cancelList
 }

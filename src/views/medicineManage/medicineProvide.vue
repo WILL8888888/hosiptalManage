@@ -87,7 +87,7 @@
     <el-table-column prop="idnum" label="发致患者姓名 / 身份证号" align="center" width="200"/>
     <el-table-column prop="nurseWorkid" label="派发负责护士姓名 / 工号" align="center" width="200"/>
     <el-table-column prop="doctorWorkid" label="派发医生姓名 / 工号" align="center" width="200"/>
-    <el-table-column fixed="right" label="操作" width="120">
+    <el-table-column fixed="right" label="操作" width="160" align="center">
       <template #default="scope">
         <el-button
           type="text"
@@ -96,6 +96,15 @@
           align="center"
         >
           派发完成
+        </el-button>
+
+        <el-button
+          type="text"
+          size="small"
+          @click.prevent="cancelProvide(scope)"
+          align="center"
+        >
+          取消派发
         </el-button>
       </template>
     </el-table-column>
@@ -109,7 +118,7 @@ import { Search } from '@element-plus/icons'
 import { computed, ref, reactive, onMounted} from 'vue'
 import type { ElForm } from 'element-plus'
 import { medicineSearchOne } from '@/utils/api/medicine'
-import { medicineInfo, medicineListSearchAll, dispatchFinish} from '@/utils/api/medicineList';
+import { medicineInfo, medicineListSearchAll, dispatchFinish, cancelList} from '@/utils/api/medicineList';
 import { patientPersonalInfo } from '@/utils/api/patientAbout'
 import { personalInfo } from '@/utils/api/doctorNurse'
 import { ElMessage } from 'element-plus'
@@ -210,6 +219,27 @@ const deleteRow =async (scope)=> {
     'medicineid' : scope.row.medicineid
   } 
   let {data} = await dispatchFinish(requestBody)
+  if(data.code === SUCCESS){
+    ElMessage({
+      message: data.msg,
+      type: 'success',
+      duration: 500
+    })
+    refreshTable()
+  }else{
+    ElMessage({
+      message: data.msg,
+      type: 'error',
+      duration: 500
+    })
+  }
+}
+
+const cancelProvide = async (scope)=>{
+  let requestBody = {
+    'medicineid' : scope.row.medicineid
+  }
+  let {data} = await cancelList(requestBody)
   if(data.code === SUCCESS){
     ElMessage({
       message: data.msg,
