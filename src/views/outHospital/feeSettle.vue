@@ -107,7 +107,7 @@ import { Search, CircleCheckFilled} from '@element-plus/icons'
 
 import { computed, reactive, ref} from 'vue'
 import { DESCRIPTIONS, COUNTALL } from '../const'
-import { wardFindPatientInfo } from '@/utils/api/ward'
+import { wardGetPrice } from '@/utils/api/wardList'
 import { formatTime } from '@/utils/index'
 import { patientPersonalInfo } from '@/utils/api/patientAbout'
 import { medicineListSearchOne } from '@/utils/api/medicineList'
@@ -168,7 +168,7 @@ const findBiometric =async ()=>{
   medicineTotalPrice.value = state.tableData.map(item => {return item.price*item.medicineNum}).reduce((pre,cur)=>{return Number((pre+cur).toFixed(2))},)
 
   let wardType = state.patientDescriptions[0].wardType
-  let wardInfo = await wardFindPatientInfo({'patientId': searchInput.idnum})
+  let wardInfo = await wardGetPrice({'wardType': wardType})
   timeDate.value = ((new Date().getTime() - personInfo.data.result[0].timeStamps) / (24*60*60*1000)).toFixed(0)
   state.totalDescriptions = {
     inDate: personInfo.data.result[0].date,

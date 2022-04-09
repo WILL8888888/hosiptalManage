@@ -11,16 +11,16 @@ const routes = [
     name:'login',
     component: () => import("../views/Login.vue")
   },
-  {
-    path: '/main',
-    component: Arrange,
-    redirect: '/home',
-    children: [{
-      path: "/home",
-      name:"home",
-      component: () => import("../views/Home.vue")
-    }]
-  },
+  // {
+  //   path: '/main',
+  //   component: Arrange,
+  //   redirect: '/home',
+  //   children: [{
+  //     path: "/home",
+  //     name:"home",
+  //     component: () => import("../views/Home.vue")
+  //   }]
+  // },
   {
     path: '/in-hospital',
     name: "入院管理",   
@@ -28,7 +28,7 @@ const routes = [
     children: [
       {
         path: "login-admit",
-        name: "入院登记",
+        name: "loginAdmit",
         component: () => import('../views/inHospital/loginAdmit.vue')
       },
       {

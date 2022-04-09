@@ -56,6 +56,14 @@ function wardFindPatientInfo(config){
   })
 }
 
+function getWardPatientInfo(config){
+  return instance.request({
+    method: 'post',
+    url: 'ward/getWardPatientInfo',
+    data: config
+  })
+}
+
 export {
   wardFindInfo,
   wardUpdatePrice,
@@ -63,5 +71,6 @@ export {
   wardFindType,
   wardFindBed,
   wardInPatient,
-  wardFindPatientInfo
+  wardFindPatientInfo,
+  getWardPatientInfo
 }

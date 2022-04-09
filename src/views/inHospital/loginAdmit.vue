@@ -1,4 +1,5 @@
 <template>
+<img src="@/assets/images/homeBack.jpg" class="backimage">
 <diliver-module :diliver-title="searchTitle"></diliver-module>
 <el-card shadow="always" class="cardCss"> 
   <el-form
@@ -38,19 +39,19 @@
     </el-form-item>
 
     <el-form-item label="病房类型" prop="wardType" required>
-      <el-select v-model="ruleForm.wardType" placeholder="入院病情" @change="getWardRoom()">
+      <el-select v-model="ruleForm.wardType" placeholder="病房类型" @change="getWardRoom()">
         <el-option v-for="(item,index) in state.Type" :key="index" :label="item" :value="item"></el-option>
       </el-select>
     </el-form-item>
 
     <el-form-item label="病室" prop="wardRoom" required>
-      <el-select v-model="ruleForm.wardRoom" placeholder="入院病情" @change="getWardBed()">
+      <el-select v-model="ruleForm.wardRoom" placeholder="病室" @change="getWardBed()">
         <el-option v-for="(item,index) in state.Room" :key="index" :label="item" :value="item"></el-option>
       </el-select>
     </el-form-item>
 
     <el-form-item label="病床号" prop="wardBed" required>
-      <el-select v-model="ruleForm.wardBed" placeholder="入院病情">
+      <el-select v-model="ruleForm.wardBed" placeholder="病床号">
         <el-option v-for="(item,index) in state.Bed" :key="index" :label="item" :value="item" ></el-option>
       </el-select>
     </el-form-item>
@@ -192,6 +193,14 @@ const resetForm = (formEl: FormInstance | undefined) => {
   left: 50%;
   top:50%;
   transform: translate(-50%,-50%);
+  box-shadow: 0 25px 35px rgba(0,0,0,0.5);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.backimage{
+  width: 100%;
+  height: 100vh;
+  filter: blur(5px);
 }
 
 :deep(.el-input__inner) {

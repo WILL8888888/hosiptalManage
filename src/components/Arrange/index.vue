@@ -1,6 +1,6 @@
 <template>
 <el-header class="header">
-  <div class="header-name"><router-link to="/">住院管理系统</router-link></div>
+  <div class="header-name"><router-link to="/in-hospital/login-admit">住院管理系统</router-link></div>
   <div>
     <el-popover
       :width="300"

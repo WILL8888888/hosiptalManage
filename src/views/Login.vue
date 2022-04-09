@@ -137,7 +137,7 @@ const loginIn= ((formEl: FormInstance | undefined)=>{
           })
           setTimeout(() => {
             router.push({
-            name: 'home'
+            name: 'loginAdmit'
           })
           }, 500);
         }else{
