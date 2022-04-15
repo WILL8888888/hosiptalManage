@@ -15,7 +15,25 @@ function wardGetPrice(config){
     data: config
   })
 }
+
+function wardPriceAdjust(config){
+  return instance.request({
+    method: 'post',
+    url: '/wardlist/wardPriceAdjust',
+    data: config
+  })
+}
+
+function wardListUpdate(config){
+  return instance.request({
+    method: 'post',
+    url: '/wardlist/wardListUpdate',
+    data: config
+  })
+}
 export {
   wardListAll,
-  wardGetPrice
+  wardGetPrice,
+  wardPriceAdjust,
+  wardListUpdate
 }

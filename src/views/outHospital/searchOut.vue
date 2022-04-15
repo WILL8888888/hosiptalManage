@@ -102,6 +102,7 @@ import { ref, computed, reactive, watch} from 'vue'
 import type { ElTable } from 'element-plus'
 import { personaloutPatientInfo, medicineListOutSearch, biometricOutSearch} from '@/utils/api/outHospital'
 import { CONDITIONS,CONDITIONS_COLOR } from '../const'
+import { ElMessage } from 'element-plus'
 import * as echarts from "echarts";
 
 interface User {
@@ -183,24 +184,30 @@ const getOutPatient =async ()=>{
   let biometric = await biometricOutSearch(requestBody)
   let tableArr = []
   let res = biometric.data.result[0]
-  res.checktime.forEach((item,index)=>{
-    let biometric = {
-      name: res.name,
-      idnum: res.idnum,
-      temperature: res.temperature[index],
-      heartrate: res.heartrate[index],
-      bloodsugar: res.bloodsugar[index],
-      covid: res.covid[index],
-      checktime: item
-    }
-    tableArr.push(biometric)
-  })
-  
-  state.tableChart = tableArr
+  if(biometric.data.result.length > 0){
+    res.checktime.forEach((item,index)=>{
+      let biometric = {
+        name: res.name,
+        idnum: res.idnum,
+        temperature: res.temperature[index],
+        heartrate: res.heartrate[index],
+        bloodsugar: res.bloodsugar[index],
+        covid: res.covid[index],
+        checktime: item
+      }
+      tableArr.push(biometric)
+    })
+    state.tableChart = tableArr
+  }else{
+    ElMessage({
+      message: '未找到该名出院病人',
+      type: 'warning'
+    })
+  }
+
 }
 
 watch(() => state.tableChart, (newValue, oldValue) => {
-  console.log(newValue)
   drawTemperatureChart(newValue);
   drawHeartRateChart(newValue);
   drawBloodSugarChart(newValue);
