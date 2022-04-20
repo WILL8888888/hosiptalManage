@@ -35,7 +35,7 @@ const MENUMODULE:menuModuleObj[] = [
   routeHead:'病房管理',
   route:[{
     routePath:'/room-manage/fee-adjust',
-    routeName:'病房费用调整'
+    routeName:'病房信息中心'
   }],
   icon:'HomeFilled'
 },

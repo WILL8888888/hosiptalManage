@@ -14,19 +14,19 @@
           class="demo-rich-conent"
           style="display: flex; gap: 16px; flex-direction: column"
         >
-          <img src="@/assets/images/doctor.jpg" alt="" style="width: 60px;height: 60px;border-radius: 50%;">
+          <img :src="imageRole" alt="" style="width: 60px;height: 60px;border-radius: 50%;">
           <div>
             <p
               class="demo-rich-content__name"
               style="margin: 0; font-weight: 600"
             >
-              医生
+              {{`${info.role} ${info.level}` }}
             </p>
             <p
               class="demo-rich-content__mention"
               style="margin: 0; font-size: 14px; color: var(--el-color-info)"
             >
-              @陈康
+              {{`@${info.name}`}}
             </p>
           </div>
 
@@ -84,14 +84,16 @@ import { useRouter } from 'vue-router'
 import { timeShow } from '@/utils/index'
 
 import  { MENUMODULE }  from './const'
-
+import { personalInfo } from '@/utils/api/doctorNurse'
 export default{
   setup(){
     const router = useRouter()
     const state = reactive({
       currentDate: timeShow(new Date()),
       isCollapse: false,
-      routePath: window.sessionStorage.getItem('routeSave')
+      routePath: window.sessionStorage.getItem('routeSave'),
+      info: {},
+      imageRole:''
     });
 
     function switchChange(){
@@ -108,10 +110,17 @@ export default{
       })
     })
 
-    onMounted(()=>{
+    onMounted(async ()=>{
       setInterval(()=>{
         state.currentDate = timeShow(new Date())
-      })
+      });
+
+      let workid = localStorage.getItem('workid');
+      let {data} = await personalInfo({'workid':workid})
+      state.info = data.result;
+      console.log(state.info.role === '医生')
+      state.imageRole = state.info.role === '医生'?'../../../../src/assets/images/doctor.jpg':'../../../../src/assets/images/nurse.jpg';
+      
     })
 
     return {

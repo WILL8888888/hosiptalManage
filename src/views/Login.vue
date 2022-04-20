@@ -130,6 +130,8 @@ const loginIn= ((formEl: FormInstance | undefined)=>{
           sessionStorage.setItem('token',data.token)
           localStorage.setItem('workid',data.workid)
           localStorage.setItem('workName',data.workName)
+          console.log(data)
+          localStorage.setItem('manage',data.manage)
           ElMessage({
             message: data.msg,
             type: 'success',

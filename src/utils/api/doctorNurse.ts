@@ -71,6 +71,39 @@ function personalInfo(config){
     data: config
   })
 }
+
+function passwordCheck(config){
+  return instance.request({
+    method: 'post',
+    url: '/users/passwordCheck',
+    data: config
+  })
+}
+
+function updateTitleName(config){
+  return instance.request({
+    method: 'post',
+    url: '/users/updateTitleName',
+    data: config
+  })
+}
+
+function updateIdentify(config){
+  return instance.request({
+    method: 'post',
+    url: '/users/updateIdentify',
+    data: config
+  })
+}
+
+function deleteUser(config){
+  return instance.request({
+    method: 'post',
+    url: '/users/deleteUser',
+    data: config
+  })
+}
+
 export {
   allUserInfo,
   doctorAllInfo,
@@ -80,5 +113,9 @@ export {
   defendStatusAsking,
   defendStatusWaitAsk,
   askingUser,
-  personalInfo
+  personalInfo,
+  passwordCheck,
+  updateTitleName,
+  updateIdentify,
+  deleteUser
 }

@@ -265,7 +265,66 @@ const DEFENDSTATUSMAP = {
   'waitAsk' : '待申请',
   'asking' : '申请中...'
 }
-const SUCCESS = 200
+
+const roleManage = {
+  'manager' : '管理员',
+  'user' : '使用者'
+}
+
+const roleManageChinToEng = {
+  '管理员': 'manager',
+  '使用者': 'user'
+}
+const SUCCESS = 200;
+
+const NursetitleName = [
+  {
+    value: '护士',
+    label: '护士',
+  },
+  {
+    value: '主管护师',
+    label: '主管护师',
+  },
+  {
+    value: '副主任护师',
+    label: '副主任护师',
+  },
+  {
+    value: '主任护师',
+    label: '主任护师',
+  }
+]
+
+const DoctortitleName = [
+  {
+    value: '住院医师',
+    label: '住院医师',
+  },
+  {
+    value: '主治医师',
+    label: '主治医师',
+  },
+  {
+    value: '副主任医师',
+    label: '副主任医师',
+  },
+  {
+    value: '主任医师',
+    label: '主任医师',
+  }
+]
+
+const manageIdentify = [
+  {
+    value: '管理员',
+    label: '管理员'
+  },
+  {
+    value: '使用者',
+    label: '使用者'
+  }
+]
 export {
   DOCTORLIST,
   ROLELIST,
@@ -275,5 +334,10 @@ export {
   MEDICINEINFO,
   COUNTALL,
   SUCCESS,
-  DEFENDSTATUSMAP
+  DEFENDSTATUSMAP,
+  roleManage,
+  roleManageChinToEng,
+  NursetitleName,
+  DoctortitleName,
+  manageIdentify
 }
