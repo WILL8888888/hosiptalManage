@@ -31,7 +31,8 @@
     style="margin-bottom: 60px"
   >
     <template #extra>
-      <el-button type="primary" @click="dialogFormVisible = true">发放药品</el-button>
+      
+      <el-button type="primary" @click="sendMedicine">发放药品</el-button>
     </template>
     <el-descriptions-item v-for="item in MEDICINEINFO" width="400px">
       <template #label>
@@ -257,6 +258,7 @@ const cancelProvide = async (scope)=>{
 }
 
 const submitForm = (formEl: FormInstance | undefined) => {
+  
   if (!formEl) return
   formEl.validate(async (valid) => {
     if (valid) {
@@ -286,6 +288,18 @@ const submitForm = (formEl: FormInstance | undefined) => {
       return false
     }
   })
+}
+
+const sendMedicine = ()=>{
+  if(localStorage.getItem('role') === '医生'){
+    dialogFormVisible.value = true;
+  }else{
+    ElMessage({
+      message: '抱歉，权限不足！医生才可进行发放',
+      type: 'warning',
+      duration: 2000
+    })
+  }
 }
 </script>
 

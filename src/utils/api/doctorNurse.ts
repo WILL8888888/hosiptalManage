@@ -104,6 +104,13 @@ function deleteUser(config){
   })
 }
 
+function verifyRole(config){
+  return instance.request({
+    method: 'post',
+    url: '/users/verifyRole',
+    data: config
+  })
+}
 export {
   allUserInfo,
   doctorAllInfo,
@@ -117,5 +124,6 @@ export {
   passwordCheck,
   updateTitleName,
   updateIdentify,
-  deleteUser
+  deleteUser,
+  verifyRole
 }

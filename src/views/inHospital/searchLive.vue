@@ -73,7 +73,10 @@ interface User {
   date: string,
   name: string,
   departmentDoctor:string,//科室加医生
-  wardInfo:string
+  wardInfo:string,
+  wardType:string,
+  wardRoom:string,
+  wardBed:string,
   idnum:string,
   gender:string,
   address: string,
@@ -93,6 +96,10 @@ let state = reactive({
 onMounted(async ()=>{
   let {data} = await patientAllList(null)
   state.tableData = data.result
+  state.tableData.forEach((item)=>{
+    item.wardInfo =  `${item.wardType}/${item.wardRoom}/${item.wardBed}`
+  })
+  
 })
 
 const filterTag = (value: string, row: User) => {
@@ -113,6 +120,9 @@ const findPatient = (async ()=>{
   }
   let {data} = await patientPersonalInfo(requestConfig)
   state.tableData = data.result
+  state.tableData.forEach((item)=>{
+    item.wardInfo =  `${item.wardType}/${item.wardRoom}/${item.wardBed}`
+  })
 })
 </script>
 

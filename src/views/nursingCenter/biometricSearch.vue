@@ -15,7 +15,7 @@
     <template #prepend>
       <el-select v-model="select" placeholder="搜索类型" style="width: 180px">
         <el-option label="身份证号" value="idnum" />
-        <el-option label="患者姓名" value="name" />
+
       </el-select>
     </template>
   </el-input>

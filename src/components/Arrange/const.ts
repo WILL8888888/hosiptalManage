@@ -83,6 +83,14 @@ const MENUMODULE:menuModuleObj[] = [
   }],
   icon:'Avatar'
 },
+{
+  routeHead:'日志管理',
+  route:[{
+    routePath:'/log/logManage',
+    routeName:'日志记录'
+  }],
+  icon:'Notebook'
+},
 ]
 
 export {

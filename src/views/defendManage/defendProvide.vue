@@ -73,32 +73,41 @@ onMounted(()=>{
 const dispatchDefend =(scope) => {
   state.confirmInfo = `医护工号：${scope.row.workid}，医护姓名：${scope.row.name}`
 }
+  
 
 const confirmEvent =async (scope) => {
-  let requestBody = {
+  if(localStorage.getItem('manage') === 'manager'){
+    let requestBody = {
     'workid': scope.row.workid
-  }
-  let defendArray = scope.row.defendItem.split(', ')
+    }
+    let defendArray = scope.row.defendItem.split(', ')
 
-  let { data }= await defendStatusWaitAsk(requestBody);
-  if(data.code === SUCCESS){
-    defendArray.forEach(async item => {
-      let request = {
-        'defendName' : item,
-        inventory: -1
-      }
-      await defendAdd(request)
-    })
-    ElMessage({
-      message: data.msg,
-      type: 'success',
-      duration: 500
-    })
-    refreshTable()
-    }else {
+    let { data }= await defendStatusWaitAsk(requestBody);
+    if(data.code === SUCCESS){
+      defendArray.forEach(async item => {
+        let request = {
+          'defendName' : item,
+          inventory: -1
+        }
+        await defendAdd(request)
+      })
       ElMessage({
-      message: data.msg,
-      type: 'error',
+        message: data.msg,
+        type: 'success',
+        duration: 500
+      })
+      refreshTable()
+      }else {
+        ElMessage({
+        message: data.msg,
+        type: 'error',
+      })
+    }
+  }else{
+    ElMessage({
+      message: '抱歉，权限不足！请联系管理员进行派发',
+      type: 'warning',
+      duration: 2000
     })
   }
   

@@ -543,53 +543,62 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
 }
 
 const adjustSure =async () => {
-  if(activeName.value === 'wardPriceTag'){
-    let requestBody = {
-    'wardType': wardTypedialog.value,
-    'price': priceAdjust.value
-    }
-    let {data} = await wardPriceAdjust(requestBody)
-    if(data.code === 200){
-      ElMessage({
-        message: data.msg,
-        type: 'success'
-      });
-      getAdjust();
-    }else{
-      ElMessage({
-        message: data.msg,
-        type: 'error'
-      })
-    }
-    refreshWardDialog()
-  }else if(activeName.value === 'wardNameTag'){
-    let requestBody = {
-      'wardType' : wardTypedialog.value,
-      'roomName': roomName.value,
-      'bedNum' : bedNum.value,
-      'newRoomNurseId' : newRoomNurseId.value,
-      'newRoomDoctorId' : newRoomDoctorId.value
-    }
-    let {data} = await wardAddRoom(requestBody);
-    let requestWardList = {
+  if(localStorage.getItem('manage') === 'manager'){
+    if(activeName.value === 'wardPriceTag'){
+      let requestBody = {
       'wardType': wardTypedialog.value,
-      'roomName' : roomName.value
+      'price': priceAdjust.value
+      }
+      let {data} = await wardPriceAdjust(requestBody)
+      if(data.code === 200){
+        ElMessage({
+          message: data.msg,
+          type: 'success'
+        });
+        getAdjust();
+      }else{
+        ElMessage({
+          message: data.msg,
+          type: 'error'
+        })
+      }
+      refreshWardDialog()
+    }else if(activeName.value === 'wardNameTag'){
+      let requestBody = {
+        'wardType' : wardTypedialog.value,
+        'roomName': roomName.value,
+        'bedNum' : bedNum.value,
+        'newRoomNurseId' : newRoomNurseId.value,
+        'newRoomDoctorId' : newRoomDoctorId.value
+      }
+      let {data} = await wardAddRoom(requestBody);
+      let requestWardList = {
+        'wardType': wardTypedialog.value,
+        'roomName' : roomName.value
+      }
+      await wardListUpdate(requestWardList)
+      if(data.code === 200){
+        ElMessage({
+          message: data.msg,
+          type: 'success'
+        });
+        getAdjust();
+      }else{
+        ElMessage({
+          message: data.msg,
+          type: 'error'
+        })
+      }
+      refreshWardDialog()
     }
-    await wardListUpdate(requestWardList)
-    if(data.code === 200){
-      ElMessage({
-        message: data.msg,
-        type: 'success'
-      });
-      getAdjust();
-    }else{
-      ElMessage({
-        message: data.msg,
-        type: 'error'
-      })
-    }
-    refreshWardDialog()
+  }else{
+    ElMessage({
+      message: '抱歉，权限不足！请联系管理员进行修改',
+      type: 'warning',
+      duration: 2000
+    })
   }
+
 }
 
 const refreshWardDialog = ()=>{

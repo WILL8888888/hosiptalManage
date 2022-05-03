@@ -115,6 +115,17 @@ const routes = [
       }
     ]
   },{
+    path: '/log',
+    name: "日志管理",
+    component: Arrange,
+    children: [
+      {
+        path: "logManage",
+        name: "日志记录",
+        component: () => import('../views/logManage/log.vue')
+      }
+    ]
+  },{
     path: "/:pathMatch(.*)*",
     name: "NotFound",
     component: () => import('../views/notFound.vue')
